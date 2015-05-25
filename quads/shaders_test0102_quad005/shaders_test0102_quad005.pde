@@ -8,10 +8,15 @@ PShape shapeGrid;
 boolean shapeMode;
 PShader pshader;
 
+int detail;
+int borderYSize;
+
 PImage image;
 
 int KWIDTH = 640;
 int KHEIGHT = 480;
+
+boolean lowRes;
 
 void setup() {
 
@@ -21,11 +26,14 @@ void setup() {
   cam.setMinimumDistance(50);
   cam.setMaximumDistance(1500);
 
-  image = loadImage("depth.jpg");
+  image = loadImage("color.jpg");
 
   pshader = loadShader("frag.glsl", "vert.glsl");
 
-  shapeGrid = createGrid(10);
+  detail = 30;
+  borderYSize = 6;
+
+  shapeGrid = createGrid();
   //shapeGrid.setFill(false);
   //shapeGrid.setStroke(color(255));
   //shapeGrid.setStroke(color(0, 255, 0));
@@ -33,7 +41,7 @@ void setup() {
   //shapeGrid.setStrokeWeight(5);
 }
 
-PShape createGrid(int detail) {
+PShape createGrid() {
 
   PShape sh = createShape();
 
@@ -41,27 +49,41 @@ PShape createGrid(int detail) {
   sh.textureMode(NORMAL);
   sh.texture(image);
 
+  float ySpace = borderYSize/2;
+
   for (int y=0; y<height-detail; y+=detail) {
 
     for (int x=0; x<width-detail; x+=detail) {
 
       PVector tl, bl, br, tr;
 
-      tl = new PVector(x, y);
-      bl = new PVector(x, y+detail);
-      br = new PVector(x+detail, y+detail);
-      tr = new PVector(x+detail, y);
+      tl = new PVector(x, y+ySpace);
+      bl = new PVector(x, y+detail-ySpace);
+      br = new PVector(x+detail, y+detail-ySpace);
+      tr = new PVector(x+detail, y+ySpace);
 
-      sh.vertex(tl.x, tl.y, tl.z, tl.x/KWIDTH, tl.y/KHEIGHT);
-      sh.vertex(bl.x, bl.y, bl.z, bl.x/KWIDTH, bl.y/KHEIGHT);
-      sh.vertex(br.x, br.y, br.z, br.x/KWIDTH, br.y/KHEIGHT);
-      sh.vertex(tr.x, tr.y, tr.z, tr.x/KWIDTH, tr.y/KHEIGHT);
+      if (lowRes) { //TODO do it in the shader!
+
+        sh.vertex(tl.x, tl.y, tl.z, tl.x/KWIDTH, tl.y/KHEIGHT);
+        sh.vertex(bl.x, bl.y, bl.z, tl.x/KWIDTH, tl.y/KHEIGHT);
+        sh.vertex(br.x, br.y, br.z, tl.x/KWIDTH, tl.y/KHEIGHT);
+        sh.vertex(tr.x, tr.y, tr.z, tl.x/KWIDTH, tl.y/KHEIGHT);
+                
+      } else {
+
+        sh.vertex(tl.x, tl.y, tl.z, tl.x/KWIDTH, tl.y/KHEIGHT);
+        sh.vertex(bl.x, bl.y, bl.z, bl.x/KWIDTH, bl.y/KHEIGHT);
+        sh.vertex(br.x, br.y, br.z, br.x/KWIDTH, br.y/KHEIGHT);
+        sh.vertex(tr.x, tr.y, tr.z, tr.x/KWIDTH, tr.y/KHEIGHT);
+      }
     }
   }
 
   sh.endShape(CLOSE);
 
   return sh;
+}
+void mousePressed() {
 }
 void keyPressed() {
 
@@ -71,17 +93,21 @@ void keyPressed() {
     //String name = "data/images/shapes-"+date.getTime()+".png";
     String name = "data/images/shapes-"+date.getTime()+".jpg";
     save(name);
+  } else if(key=='r'){
+    
+      lowRes = !lowRes;
+  shapeGrid = createGrid();
+  
   }
 }
 void draw() {
 
-  background(0);
+  background(255);
 
   shapeMode(CENTER);
 
   shader(pshader);
 
-  shape(shapeGrid); 
-
+  shape(shapeGrid);
 }
 
