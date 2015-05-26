@@ -4,6 +4,7 @@ uniform mat4 transform;
 uniform mat4 texMatrix;
 
 uniform sampler2D texture;
+uniform sampler2D tex1;
 
 attribute vec4 vertex;
 attribute vec4 color;
@@ -14,22 +15,20 @@ varying vec4 vertTexCoord;
 
 void main() {
 
-  
   vec4 myVertex = vertex;
   
   vertTexCoord = texMatrix * vec4(texCoord, 1.0, 1.0);
   
   vertColor = texture2D(texture, vertTexCoord.st) * color;
   
-  myVertex.z = (vertColor.r+vertColor.g+vertColor.b) * 100 - 150;
+  myVertex.z = (vertColor.r) * 100 - 50;
   
-  //myVertex.z = mod(myVertex.y, 4.0)*10;
+  //myVertex.z = clamp(myVertex.z, -50, 50);
   
-  if(myVertex.z == 10) vertColor = vec4(0.1, 1.0, 0.1, 1.0);
-  
+  vertColor = texture2D(tex1, vec2(0.0, vertColor.r  )) * color;
+      
   gl_Position = transform * myVertex;
   
-  //if(myVertex.x == 0 || myVertex.x == 480) vertColor.a = 0.0;
   if( mod(myVertex.y, 5.0) > 0.5 ) vertColor.a = 0.0;
   
 }

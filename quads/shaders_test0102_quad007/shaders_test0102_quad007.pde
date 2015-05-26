@@ -14,7 +14,7 @@ PShader pshader;
 int detail;
 int borderYSize;
 
-PImage image;
+PImage[] images;
 
 int KWIDTH = 640;
 int KHEIGHT = 480;
@@ -28,10 +28,15 @@ void setup() {
   cam = new PeasyCam(this, 500);
   cam.setMinimumDistance(50);
   cam.setMaximumDistance(1500);
-
-  image = loadImage("color.jpg");
+  
+  images = new PImage[2];
+  
+  images[0] = loadImage("depth.jpg");
+  images[1] = loadImage("upAndDown.jpg");
 
   pshader = loadShader("frag.glsl", "vert.glsl");
+  
+  pshader.set("tex1", images[1]);
 
   detail = 10;
   borderYSize = 15;
@@ -51,7 +56,7 @@ PShape createGrid() {
 
   sh.beginShape(QUADS);
   sh.textureMode(NORMAL);
-  sh.texture(image);
+  sh.texture(images[0]);
 
   float ySpace = borderYSize/2;
   int numberOfRows = 0;
@@ -120,8 +125,8 @@ void keyPressed() {
 }
 void draw() {
 
-  //background(127);
-  background(255);
+  background(127);
+  //background(255);
   
   shapeMode(CENTER);
 
