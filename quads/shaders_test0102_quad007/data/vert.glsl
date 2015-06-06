@@ -19,13 +19,13 @@ void main() {
   
   vertTexCoord = texMatrix * vec4(texCoord, 1.0, 1.0);
   
-  vertColor = texture2D(texture, vertTexCoord.st) * color;
+  vertColor = texture2D(texture, vertTexCoord.st);
   
   myVertex.z = (vertColor.r) * 100 - 50;
   
   //myVertex.z = clamp(myVertex.z, -50, 50);
   
-  vertColor = texture2D(tex1, vec2(0.0, vertColor.r  )) * color;
+  vertColor = texture2D(tex1, vec2(0.0, vertColor.r  ));
       
   gl_Position = transform * myVertex;
   

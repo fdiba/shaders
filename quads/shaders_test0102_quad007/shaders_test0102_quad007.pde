@@ -48,6 +48,9 @@ void setup() {
   //shapeGrid.setStroke(color(0, 255, 0));
   shapeGrid.setStroke(false);
   //shapeGrid.setStrokeWeight(5);
+  
+  //pshader.set("tex1", images[0]);
+  
 }
 
 PShape createGrid() {
