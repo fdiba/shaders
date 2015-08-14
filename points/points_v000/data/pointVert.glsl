@@ -19,7 +19,7 @@ varying vec2 pos;
 
 void main() {
 
-  vec4 col;
+  vec4 col = vec4(1.,1.,1.,1.);
   vec2 m0ffset = vec2(offset);
 
   //---------- get distance to focalPlane ----------//
@@ -57,7 +57,7 @@ void main() {
   col.a = alpha;
 
   //to debug
-  //col = vec4(1.,1.,1.,1.);
+  //col = vec4(1.,.0,.0,1.);
 
   if(m0ffset[0] > 0)m0ffset[0]+=distToFocalPlane;
   if(m0ffset[0] < 0)m0ffset[0]+=-distToFocalPlane;
